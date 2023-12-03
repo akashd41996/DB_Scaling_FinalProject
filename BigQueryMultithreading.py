@@ -24,22 +24,28 @@ queries = [
     # Query 9
     "SELECT a.Hvfhs_license_num, a.Pickup_datetime, b.DropOff_datetime FROM `dba-final-project-gcp.without_vm_upload.HV_Freq_Table` a JOIN `dba-final-project-gcp.without_vm_upload.HV_Freq_Table` b ON a.Hvfhs_license_num = b.Hvfhs_license_num WHERE a.PULocationID != b.DOLocationID",
     # Query 10
-    "SELECT PULocationID, COUNT(*) AS TotalTrips, AVG(trip_time) AS AverageTripTime FROM `dba-final-project-gcp.without_vm_upload.HV_Freq_Table` GROUP BY PULocationID HAVING AVG(trip_time) > 600",
+    "SELECT PULocationID, COUNT(*) AS TotalTrips, AVG(trip_time) AS AverageTripTime FROM `dba-final-project-gcp.without_vm_upload.HV_Freq_Table` GROUP BY PULocationID HAVING AVG(trip_time) > 600"
 ]
 
 def benchmark_query(query):
-    start_time = time.time()
-    job_config = bigquery.QueryJobConfig(use_query_cache=False)
-    query_job = client.query(query, job_config=job_config)  
-    results = query_job.result(timeout=180)
-    end_time = time.time()
-    total_bytes_processed = query_job.total_bytes_processed
-    total_bytes_billed = query_job.total_bytes_billed or 0
-    cost_estimate = (total_bytes_billed / 1e12) * 5
-    print(f"Query: Time taken: {end_time - start_time} seconds")
-    print(f"Data processed (bytes): {total_bytes_processed}")
-    print(f"Data billed (bytes): {total_bytes_billed}")
-    print(f"Estimated cost (USD): {cost_estimate:.2f}\n")
+    try:
+        start_time = time.time()
+        job_config = bigquery.QueryJobConfig(use_query_cache=False)
+        query_job = client.query(query, job_config=job_config)
+        results = query_job.result(timeout=180)  # Adjust the timeout as needed
+        end_time = time.time()
+
+        total_bytes_processed = query_job.total_bytes_processed
+        total_bytes_billed = query_job.total_bytes_billed or 0
+        cost_estimate = (total_bytes_billed / 1e12) * 5
+
+        print(f"Query: Time taken: {end_time - start_time} seconds")
+        print(f"Data processed (bytes): {total_bytes_processed}")
+        print(f"Data billed (bytes): {total_bytes_billed}")
+        print(f"Estimated cost (USD): {cost_estimate:.2f}\n")
+    except Exception as e:
+        print(f"Error executing query: {query}")
+        print(f"Exception: {e}\n")
 
 def run_query(query):
     benchmark_query(query)
