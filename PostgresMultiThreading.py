@@ -2,13 +2,12 @@ import threading
 import time
 import psycopg2
 
-# Database connection parameters
 host = "35.196.84.94"
 dbname = "database"
 user = "admin"
 password = "password"
 
-# List of queries
+
 queries = [
     # Query 1
     "SELECT pulocationid, COUNT(*) AS totaltrips, AVG(trip_time) AS averagetime FROM hv_vehicle_trip GROUP BY pulocationid ORDER BY totaltrips DESC",
@@ -32,7 +31,7 @@ queries = [
     "SELECT pulocationid, COUNT(*) AS TotalTrips, AVG(trip_time) AS AverageTripTime FROM hv_vehicle_trip GROUP BY pulocationid HAVING AVG(trip_time) > 600"
 ]
 
-# Function to benchmark a query
+
 def benchmark_query(query, conn):
     try:
         start_time = time.time()
@@ -44,7 +43,7 @@ def benchmark_query(query, conn):
     except Exception as e:
         print(f"Error executing query: {e}\n")
 
-# Function to run query in a thread
+
 def run_query(query):
     conn = psycopg2.connect(host=host, dbname=dbname, user=user, password=password)
     try:
@@ -52,13 +51,13 @@ def run_query(query):
     finally:
         conn.close()
 
-# Creating and starting threads
+
 threads = []
 for query in queries:
     thread = threading.Thread(target=run_query, args=(query,))
     threads.append(thread)
     thread.start()
 
-# Waiting for all threads to complete
+
 for thread in threads:
     thread.join()
