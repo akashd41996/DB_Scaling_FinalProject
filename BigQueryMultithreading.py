@@ -2,10 +2,10 @@ import threading
 import time
 from google.cloud import bigquery
 
-# Initialize a BigQuery client
+
 client = bigquery.Client()
 
-# List of complex queries for benchmarking
+
 queries = [
     """
     SELECT PULocationID, COUNT(*) AS TotalTrips, AVG(trip_time) AS AverageTime
@@ -106,23 +106,23 @@ queries = [
 ]
 
 
-# Function to execute a query and measure the time taken
+
 def benchmark_query(query):
     try:
         start_time = time.time()
-        # Create a QueryJobConfig object with use_query_cache set to False
+       
         job_config = bigquery.QueryJobConfig(use_query_cache=False)
 
-        query_job = client.query(query, job_config=job_config)  # Run the query
-        results = query_job.result(timeout=180)  # Wait for the query to finish
+        query_job = client.query(query, job_config=job_config)  
+        results = query_job.result(timeout=180)  
         end_time = time.time()
 
-        # Fetch the billing details from the completed query job
+       
         total_bytes_processed = query_job.total_bytes_processed
-        total_bytes_billed = query_job.total_bytes_billed or 0  # Use zero if None to handle free queries
-        cost_estimate = (total_bytes_billed / 1e12) * 5  # Assumes the cost of $5 per TB as per current pricing
+        total_bytes_billed = query_job.total_bytes_billed or 0  
+        cost_estimate = (total_bytes_billed / 1e12) * 5  
 
-        # Print the execution details including the cost estimate
+      
         print(f"Query: {query}\nTime taken: {end_time - start_time} seconds")
         print(f"Data processed (bytes): {total_bytes_processed}")
         print(f"Data billed (bytes): {total_bytes_billed}")
@@ -132,6 +132,6 @@ def benchmark_query(query):
         print(f"Error: {e}\nFailed to execute query: {query}\n")
 
 
-# Run the benchmark on each query
+
 for query in queries:
     benchmark_query(query)
