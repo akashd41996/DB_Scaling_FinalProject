@@ -1,13 +1,13 @@
 import time
 import psycopg2
 
-# PostgreSQL connection parameters
+
 host = "35.196.84.94"
 dbname = "database"
 user = "admin"
 password = "password"
 
-# List of complex queries for benchmarking
+
 queries = [
     """
     SELECT pulocationid, COUNT(*) AS totaltrips, AVG(trip_time) AS averagetime
@@ -87,7 +87,7 @@ ORDER BY NumTrips DESC
 ]
 
 
-# Function to execute a query and measure the time taken
+
 def benchmark_query(query, conn):
     start_time = time.time()
     with conn.cursor() as cursor:
@@ -97,10 +97,10 @@ def benchmark_query(query, conn):
     print(f"Query:\n{query}\nTime taken: {end_time - start_time} seconds\n")
 
 
-# Connect to the PostgreSQL database
+
 conn = psycopg2.connect(host=host, dbname=dbname, user=user, password=password)
 
-# Run the benchmark on each query
+
 try:
     for query in queries:
         benchmark_query(query, conn)
