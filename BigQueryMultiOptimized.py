@@ -115,14 +115,14 @@ def benchmark_query(query):
         
         job_config = bigquery.QueryJobConfig(use_query_cache=False)
 
-        query_job = client.query(query, job_config=job_config)  # Run the query
-        results = query_job.result()  # Wait for the query to finish
+        query_job = client.query(query, job_config=job_config)  
+        results = query_job.result()  
         end_time = time.time()
 
        
         total_bytes_processed = query_job.total_bytes_processed
-        total_bytes_billed = query_job.total_bytes_billed or 0  # Use zero if None to handle free queries
-        cost_estimate = (total_bytes_billed / 1e12) * 5  # Assumes the cost of $5 per TB as per current pricing
+        total_bytes_billed = query_job.total_bytes_billed or 0  
+        cost_estimate = (total_bytes_billed / 1e12) * 5  
 
         
         print(f"Query: {query}\nTime taken: {end_time - start_time} seconds")
